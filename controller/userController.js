@@ -1,4 +1,5 @@
 const User = require('../model/userModel');
+const bcrypt = require("bcrypt");
 
 // check password validation
 function passwordval(password){
@@ -15,6 +16,17 @@ function passwordval(password){
     }
 
 } 
+
+// hash password
+const hashPassword = async(password) =>
+{
+  // it will generate random salt for each user
+  const salt = await bcrypt.genSalt(5);
+
+  // hash password using bcrypt
+  const hashed = await bcrypt.hash(password,salt);
+  return hashed;
+}
 
 // pagination
 const getPagination = async(resultPerPage,pageno,projection)=>{
@@ -60,6 +72,9 @@ exports.createUser = async(req,res) =>{
              message:"email is not valid email"
         })
     }
+
+    const hashedPassword = await hashPassword(password);
+
     const duplicateuser = await User.findOne({email})
     if(duplicateuser)
     {
@@ -68,12 +83,12 @@ exports.createUser = async(req,res) =>{
         })
     }
     try{
-        const newUser = await User.create({ name, email, password });
+        const newUser = await User.create({ name, email, password:hashedPassword });
         return res.status(201).json({
             message: "User registered successfully",
             newUser: {
                 name: newUser.name,
-                email: newUser.email
+                email: newUser.email,
             }
         });
     }
@@ -109,15 +124,22 @@ exports.loginUser = async(req,res) =>{
         const user = await User.findOne({email});
         if(!user)
         {
-          return res.json({
-            message:"not a valid email or password"
-          }).status(400)
+            return res.json({
+                message:"not a valid credentials"
+            })
         }
-        res.json({
-            message:"user loggedIn successfully",
-            email
-        })
-
+        const hashed = await bcrypt.compare(password,user.password)
+        if(hashed)
+        { 
+            return res.json({
+                message:"user loggedIn successfully",
+                email
+            })
+        }
+          return res.json({
+            message:"not a valid emailId or password",
+            hashed
+          }).status(400)
     }
     catch(error)
     {
