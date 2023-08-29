@@ -1,6 +1,6 @@
 const User = require('../model/userModel');
 const bcrypt = require("bcrypt");
-
+// const sendEmail = require('../utils/sendEmail')
 // check password validation
 function passwordval(password){
     if(password.length <8)
@@ -53,6 +53,13 @@ exports.createUser = async(req,res) =>{
     const {name,email,password} = req.body;
     const passcheck = passwordval(password);
     const emailcheck = emailval(email) 
+
+    // sendgrid process
+    // const from = 'gau963191@gmail.com';
+    // const to = 'gridharkumar279@gmail';
+    // const subject ="checking";
+    // const text = "hello gaurav"
+
     if(!name || !email || !password)
     {
         return res.json({
@@ -84,6 +91,10 @@ exports.createUser = async(req,res) =>{
     }
     try{
         const newUser = await User.create({ name, email, password:hashedPassword });
+
+        // email process
+        // await sendEmail(to,from,subject,text);
+
         return res.status(201).json({
             message: "User registered successfully",
             newUser: {
