@@ -2,50 +2,30 @@ const User = require('../model/userModel');
 const bcrypt = require("bcrypt");
 // const sendEmail = require('../utils/sendEmail')
 // check password validation
-function passwordval(password){
-    if(password.length <8)
-    {
-        return "Password should be at least 8 characters long.";
-    }
-    const passtype = [/[A-Z]/, /[a-z]/, /\d/, /[@#$%^&!]/];
+const hashPassword = require("../middleware/hash")
+const getPagination = require("../utils/pagination")
+const {emailval,passwordval} = require("../middleware/validators");
+// function passwordval(password){
+//     if(password.length <8)
+//     {
+//         return "Password should be at least 8 characters long.";
+//     }
+//     const passtype = [/[A-Z]/, /[a-z]/, /\d/, /[@#$%^&!]/];
     
-    if (passtype.every(regex => regex.test(password))) {
-        return "Password is strong";
-    } else {
-        return "Password should include at least one uppercase letter, one lowercase letter, one number, and one special character.";
-    }
+//     if (passtype.every(regex => regex.test(password))) {
+//         return "Password is strong";
+//     } else {
+//         return "Password should include at least one uppercase letter, one lowercase letter, one number, and one special character.";
+//     }
 
-} 
-
-// hash password
-const hashPassword = async(password) =>
-{
-  // it will generate random salt for each user
-  const salt = await bcrypt.genSalt(5);
-
-  // hash password using bcrypt
-  const hashed = await bcrypt.hash(password,salt);
-  return hashed;
-}
-
-// pagination
-const getPagination = async(resultPerPage,pageno,projection)=>{
-
-    // skip the rows on the basis of page
-    const skip = (pageno-1)*resultPerPage
-    const users=await User.find({},projection)
-    .skip(skip)
-    .limit(resultPerPage)
-
-    return users;
-}
+// } 
 
 // check email validation
-function emailval(email)
-{
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(email);
-}
+// function emailval(email)
+// {
+//     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//     return emailPattern.test(email);
+// }
 
 // register user
 exports.createUser = async(req,res) =>{
