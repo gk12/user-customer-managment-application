@@ -6,7 +6,7 @@ const app= express();
 const PORT = 3091
 
 app.use(bodyParser.json());
-
+app.use(express.urlencoded({extended:false}))
 app.use('/api',routes);
 
 app.listen(PORT,()=>{
