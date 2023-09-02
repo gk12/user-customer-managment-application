@@ -1,6 +1,6 @@
-const  fs =require( 'fs/promises');
+const  fs =require('fs').promises;
 const path = require("path")
-const fsPromises = require('fs').promises;
+
 // upload file using multer
 exports.fileUpload = async(req,res) =>{
     //If no file found
@@ -23,15 +23,14 @@ exports.fileUpload = async(req,res) =>{
      }
    }
    
+//    read file
    exports.getFile = async(req,res) =>{
-       const path_dir = path.join('home','gaurav','Desktop','crud-api','uploads')
-       console.log(path_dir)
+    const path_dir = path.join('home','gaurav','Desktop','crud-api','uploads')
        try{
-        console.log(filen)
-
-           const filen = await fsPromises.readdir(path_dir)
+           const filen = await fs.promises.readdir(path_dir)
            res.json({
                files:filen
+            
            })
        }
        catch(error)
