@@ -1,4 +1,5 @@
 const User = require('../model/userModel');
+const Role = require('../model/roleModel');
 const bcrypt = require("bcrypt");
 // const sendEmail = require('../utils/sendEmail')
 const hashPassword = require("../middleware/hash")
@@ -8,7 +9,7 @@ const {emailval,passwordval} = require("../middleware/validators");
 // register user
 exports.createUser = async(req,res) =>{
     try{
-    const {name,email,password} = req.body;
+    const {name,email,password,role} = req.body;
     const passcheck = passwordval(password);
     const emailcheck = emailval(email) 
 
@@ -48,7 +49,10 @@ exports.createUser = async(req,res) =>{
         })
     }
     try{
-        const newUser = await User.create({ name, email, password:hashedPassword });
+
+        // user having two roles (user,admin)
+        const roleId = await Role.findOne({role});
+        const newUser = await User.create({ name, email, password:hashedPassword,role:roleId._id });
 
         // email process
         // await sendEmail(to,from,subject,text);
@@ -157,11 +161,11 @@ exports.updateUser = async(req,res) =>{
 // get all the users
 
 exports.allUser = async(req,res) =>{
-       
+    
+    // concept of pagination
     const page = parseInt(req.query.page) || 1;
     const resultPerPage = parseInt(req.query.resultPerPage) || 2;
     try{
-
         // here i have used projection
         const projection = {name:1,email:1,_id:0}
         const result = await getPagination(resultPerPage,page,projection)

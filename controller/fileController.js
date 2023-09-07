@@ -1,6 +1,5 @@
 const  fs =require('fs').promises;
 const path = require("path")
-
 // upload file using multer
 exports.fileUpload = async(req,res) =>{
     //If no file found
