@@ -1,18 +1,33 @@
 const express = require("express");
 const {createUser,loginUser, updateUser,allUser,deleteUser} = require('../controller/userController')
 const userrouter = express.Router();
-// const multer = require("multer")
-// const storage = multer.diskStorage({
-//     destination: function (req, file, cb) {
-//       cb(null, './uploads')
-//     },
-//     filename: function (req, file, cb) {
-//       cb(null,`${Date.now()}-${file.originalname}`)
-//     }
-//   })
-// const upload = multer({storage})
+const passport = require('passport')
+const initalizingPassport = require('../passport/initsession')
+
+initalizingPassport(passport)
+// userrouter.use(passport.initialize());
+// userrouter.use(passport.session());
+userrouter.get("/profile", (req, res) => {
+    res.json(req.user);
+  });
+  
+  
+//user logout route
+  userrouter.post(
+    "/logout", 
+    (req, res) => {
+      req.logout((err) => {
+        if (err) {
+          console.log("Error while logging out", err);
+          return res.json("Error while logging out");
+        }
+      });
+      res.json({ message: "Logged out successfully" });
+    }
+  );
+  
 userrouter.post('/register',createUser);
-userrouter.post('/login',loginUser);
+userrouter.post('/login',passport.authenticate('local'),loginUser);
 userrouter.put('/update/:id',updateUser);
 userrouter.get('/allusers',allUser);
 userrouter.delete('/deleteuser/:id',deleteUser)
