@@ -9,7 +9,7 @@ const {emailval,passwordval} = require("../middleware/validators");
 // register user
 exports.createUser = async(req,res) =>{
     try{
-    const {name,email,password,role} = req.body;
+    const {username,name,email,password,role} = req.body;
     const passcheck = passwordval(password);
     const emailcheck = emailval(email) 
 
@@ -19,7 +19,7 @@ exports.createUser = async(req,res) =>{
     // const subject ="checking";
     // const text = "hello gaurav"
 
-    if(!name || !email || !password)
+    if(!username || !name || !email || !password)
     {
         return res.json({
             message:"Insufficient information provided"
@@ -52,7 +52,7 @@ exports.createUser = async(req,res) =>{
 
         // user having two roles (user,admin)
         const roleId = await Role.findOne({role});
-        const newUser = await User.create({ name, email, password:hashedPassword,role:roleId._id });
+        const newUser = await User.create({ username,name, email, password:hashedPassword,role:roleId._id });
 
         // email process
         // await sendEmail(to,from,subject,text);
@@ -60,6 +60,7 @@ exports.createUser = async(req,res) =>{
         return res.status(201).json({
             message: "User registered successfully",
             newUser: {
+                username:newUser.username,
                 name: newUser.name,
                 email: newUser.email,
             }
@@ -93,8 +94,8 @@ catch(error){
 exports.loginUser = async(req,res) =>{
  
     try{
-        const {email,password} = req.body;
-        const user = await User.findOne({email});
+        const {username,password} = req.body; 
+        const user = await User.findOne({username});
         if(!user)
         {
             return res.json({
