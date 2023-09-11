@@ -2,10 +2,10 @@ require("./db/db")
 const express = require("express")
 const userroutes = require("./routes/userRoutes");
 const fileroutes = require("./routes/fileRoutes")
-// const passport = require('passport')
+const initalizingPassport = require('./passport/initsession')
 const app= express();
-const PORT = 3091
-
+const PORT = 3093
+initalizingPassport(app)
 app.use(express.json());
 app.use(express.urlencoded({extended:false}))
 app.use('/api/file',fileroutes)
