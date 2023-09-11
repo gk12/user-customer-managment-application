@@ -2,11 +2,6 @@ const express = require("express");
 const {createUser,loginUser, updateUser,allUser,deleteUser} = require('../controller/userController')
 const userrouter = express.Router();
 const passport = require('passport')
-const initalizingPassport = require('../passport/initsession')
-
-initalizingPassport(passport)
-// userrouter.use(passport.initialize());
-// userrouter.use(passport.session());
 userrouter.post('/login',passport.authenticate('local'),loginUser);
 userrouter.get("/profile", (req, res) => {
     res.json(req.user);
