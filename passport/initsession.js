@@ -1,28 +1,34 @@
+const passport = require('passport')
 const express = require('express')
-const exSession = require("express-session");
+const session = require("express-session");
 const LocalStrategy = require('passport-local').Strategy
 const User = require('../model/userModel')
 const bcrypt = require("bcrypt");
 const MongoStore = require('connect-mongo')
-const app = express();
 const url ='mongodb://localhost:27017/mydatabase'
-initalizingPassport = (passport) =>{
+initalizingPassport = (app) =>{
     app.use(
-    exSession({
+    session({
     secret:'secret',
     resave:false,
-    saveUninitialized:false,
+    saveUninitialized:true,
     cookie: {
         maxAge: 300000, // 5minutes
+        secure: false,
+        domain: "localhost",
+        path: "/",
       },
       name: "gk",
       store: MongoStore.create({ mongoUrl: url }),
 }))
-    
+app.use(passport.initialize());
+app.use(passport.session());
+
         passport.use(
             new LocalStrategy(async(username,password,done)=>{
-                const user = await User.findOne({username});
-                // app.use(session({secret:'secret',resave:false,saveUninitialized:false}))
+                const user = await User.findOne({
+                    $or: [{ username: username }, { email: username }],
+                  });
                 try {
                     if(!user)
                     {
@@ -40,21 +46,12 @@ initalizingPassport = (passport) =>{
                
             })
         )
-        passport.serializeUser((user,done)=>{
-            done(null,user.id)
-        })
-        passport.deserializeUser(async(id,done)=>{
-            try {
-                const user = await User.findById(id)
-                done(null,user)
-            } catch (error) {
-                done(error,false)
-            }
+        passport.serializeUser(User.serializeUser());
+        passport.deserializeUser(User.deserializeUser());
+      
+        console.log("passport and sessions loaded")
 
-        })
-
-        app.use(passport.initialize());
-        app.use(passport.session());
+        
 }
 
 module.exports = initalizingPassport
