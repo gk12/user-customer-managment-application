@@ -95,7 +95,9 @@ exports.loginUser = async(req,res) =>{
  
     try{
         const {username,password} = req.body; 
-        const user = await User.findOne({username});
+        const user = await User.findOne({
+            $or: [{ username: username }, { email: username }],
+          });
         if(!user)
         {
             return res.json({
@@ -107,7 +109,7 @@ exports.loginUser = async(req,res) =>{
         { 
             return res.json({
                 message:"user loggedIn successfully",
-                email
+                username
             })
         }
           return res.json({
