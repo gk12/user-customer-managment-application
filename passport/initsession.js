@@ -1,14 +1,14 @@
-const LocalStrategy = require('passport-local').Strategy
 const express = require('express')
+const exSession = require("express-session");
+const LocalStrategy = require('passport-local').Strategy
 const User = require('../model/userModel')
 const bcrypt = require("bcrypt");
-const session = require("express-session");
+const MongoStore = require('connect-mongo')
 const app = express();
 const url ='mongodb://localhost:27017/mydatabase'
-const MongoStore = require('connect-mongo')
 initalizingPassport = (passport) =>{
     app.use(
-    session({
+    exSession({
     secret:'secret',
     resave:false,
     saveUninitialized:false,
@@ -18,8 +18,7 @@ initalizingPassport = (passport) =>{
       name: "gk",
       store: MongoStore.create({ mongoUrl: url }),
 }))
-    app.use(passport.initialize());
-    app.use(passport.session());
+    
         passport.use(
             new LocalStrategy(async(username,password,done)=>{
                 const user = await User.findOne({username});
@@ -46,13 +45,16 @@ initalizingPassport = (passport) =>{
         })
         passport.deserializeUser(async(id,done)=>{
             try {
-                const user = await User.findById({id})
+                const user = await User.findById(id)
                 done(null,user)
             } catch (error) {
                 done(error,false)
             }
 
         })
+
+        app.use(passport.initialize());
+        app.use(passport.session());
 }
 
 module.exports = initalizingPassport

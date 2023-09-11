@@ -7,6 +7,7 @@ const initalizingPassport = require('../passport/initsession')
 initalizingPassport(passport)
 // userrouter.use(passport.initialize());
 // userrouter.use(passport.session());
+userrouter.post('/login',passport.authenticate('local'),loginUser);
 userrouter.get("/profile", (req, res) => {
     res.json(req.user);
   });
@@ -27,7 +28,6 @@ userrouter.get("/profile", (req, res) => {
   );
   
 userrouter.post('/register',createUser);
-userrouter.post('/login',passport.authenticate('local'),loginUser);
 userrouter.put('/update/:id',updateUser);
 userrouter.get('/allusers',allUser);
 userrouter.delete('/deleteuser/:id',deleteUser)
