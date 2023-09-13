@@ -42,6 +42,7 @@ exports.createUser = async(req,res) =>{
     const hashedPassword = await hashPassword(password);
 
     const duplicateuser = await User.findOne({email})
+    console.log(email)
     if(duplicateuser)
     {
         return res.json({
@@ -168,7 +169,19 @@ exports.allUser = async(req,res) =>{
     // concept of pagination
     const page = parseInt(req.query.page) || 1;
     const resultPerPage = parseInt(req.query.resultPerPage) || 2;
+
+    // find username from session
+    const username = req.session.passport.user;
     try{
+
+        const user_details = await User.findOne({username}).populate('role');
+        if(user_details.role.role !== 'admin')
+        {
+            return res.json({
+                message:"not a authenticated user"
+            })
+        }
+
         // here i have used projection
         const projection = {name:1,email:1,_id:0}
         const result = await getPagination(resultPerPage,page,projection)
