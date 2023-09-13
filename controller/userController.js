@@ -42,7 +42,6 @@ exports.createUser = async(req,res) =>{
     const hashedPassword = await hashPassword(password);
 
     const duplicateuser = await User.findOne({email})
-    console.log(email)
     if(duplicateuser)
     {
         return res.json({
@@ -187,15 +186,15 @@ exports.allUser = async(req,res) =>{
         const result = await getPagination(resultPerPage,page,projection)
         if(!result)
         {
-            res.json({
+            return res.json({
                 message:"no user found"
             }).status(400) 
         }
-        res.json({
+        return res.json({
             result
         }).status(200)
     }catch(error){
-        res.json({
+        return res.json({
             message:"unknown error"
         }).status(401)
     }
