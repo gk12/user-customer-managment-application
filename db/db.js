@@ -9,8 +9,8 @@ async function connectToDatabase() {
     });
     console.log('Connected to MongoDB');
     
-    // i have set index - name unique (if someone wants to add similar name as stored name then they will get error)
-    await User.collection.createIndex({ "name": 1 }, { unique: true });
+    // i have set index - username unique (if someone wants to add similar name as stored name then they will get error)
+    await User.collection.createIndex({ "username": 1 }, { unique: true });
   } catch (error) {
     console.error('Connection error:', error);
   }
