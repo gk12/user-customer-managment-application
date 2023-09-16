@@ -24,16 +24,17 @@ exports.fileUpload = async(req,res) =>{
    
 //    read file
    exports.getFile = async(req,res) =>{
-    const path_dir = path.join('home','gaurav','Desktop','crud-api','uploads')
+    const path_dir = path.join('/','home','gaurav','Desktop','crud-api','uploads')
        try{
-           const filen = await fs.promises.readdir(path_dir)
+           const filen = await fs.readdir(path_dir)
            res.json({
-               files:filen
+               filen
             
            })
        }
        catch(error)
        {
+        console.log(error)
           res.json({
            message:"Error while reading files"
           })
