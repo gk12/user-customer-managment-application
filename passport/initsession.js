@@ -13,7 +13,7 @@ initalizingPassport = (app) =>{
     resave:false,
     saveUninitialized:true,
     cookie: {
-        maxAge: 300000, // 5minutes
+        maxAge: 3000000, 
         secure: false,
         domain: "localhost",
         path: "/",
