@@ -1,9 +1,34 @@
 const  fs =require('fs').promises;
 const path = require("path")
+const User = require('../model/userModel');
+const File = require('../model/fileModel');
+
+function filedetail(file){
+ const filedetails = [];
+ const filename = file.filename;
+ const originalname = file.originalname
+ const size = file.size
+ filedetails.push({filename,originalname,size})
+ return filedetails
+}
+function user1(req){
+  const user = req.session.passport.user;
+  return user;
+}
 // upload file using multer
 exports.fileUpload = async(req,res) =>{
+
+    const username = user1(req);
+    const user = await User.findOne({username});
+    const userId = user._id;
+    const file = filedetail(req.file)
+    const  filename = file[0].filename;
+    const originalname = file[0].originalname;
+    const size = file[0].size;
+
+    await File.insertMany({filename,originalname,size,userId});
+    // const filename = file
     //If no file found
-    console.log(req.file)
     if (!req.file) {
        return res.status(400).send("No such file uploaded.");
      }
@@ -39,4 +64,27 @@ exports.fileUpload = async(req,res) =>{
            message:"Error while reading files"
           })
        }
+   }
+
+   exports.deleteFile = async(req,res)=>{
+    const fileId = req.params.id;
+    try {
+        const file = await File.findById(fileId);
+        if(!file)
+        {
+          res.end('Not a valid file id')
+
+        }
+        const path = `/home/gaurav/Desktop/crud-api/uploads/${file.filename}`;
+        fs.unlink(path);
+        await File.deleteOne({_id:fileId});
+        res.json({
+          message:"File deleted successfully"
+        }).status(200);
+
+    } catch (error) {
+      res.json({
+        message:"Error while deleting file"
+      }).status(500)
+    }
    }
