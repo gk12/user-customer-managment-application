@@ -66,6 +66,7 @@ exports.fileUpload = async(req,res) =>{
        }
    }
 
+  //  delete file form upload folder and database
    exports.deleteFile = async(req,res)=>{
     const fileId = req.params.id;
     try {
@@ -76,6 +77,8 @@ exports.fileUpload = async(req,res) =>{
 
         }
         const path = `/home/gaurav/Desktop/crud-api/uploads/${file.filename}`;
+
+        // unlink is used to delete the file form directory
         fs.unlink(path);
         await File.deleteOne({_id:fileId});
         res.json({
