@@ -21,7 +21,7 @@ exports.createUser = async(req,res) =>{
 
     if(!username || !name || !email || !password)
     {
-        return res.json({
+        return res.status(404).json({
             message:"Insufficient information provided"
         })
     }
@@ -100,14 +100,14 @@ exports.loginUser = async(req,res) =>{
           });
         if(!user)
         {
-            return res.json({
+            return res.status(401).json({
                 message:"not a valid credentials"
             })
         }
         const hashed = await bcrypt.compare(password,user.password)
         if(hashed)
         { 
-            return res.json({
+            return res.status(200).json({
                 message:"user loggedIn successfully",
                 username
             })
@@ -182,7 +182,7 @@ exports.allUser = async(req,res) =>{
         }
 
         // here i have used projection
-        const projection = {name:1,email:1,_id:0}
+        const projection = {name:1,email:1,_id:1}
         const result = await getPagination(resultPerPage,page,projection)
         if(!result)
         {
