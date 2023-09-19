@@ -30,15 +30,18 @@ app.use(passport.session());
                     $or: [{ username: username }, { email: username }],
                   });
                 try {
-                    if(!user)
-                    {
-                        return done(null,false)
-                    }
-                    const hashed = await bcrypt.compare(password,user.password)
-                    if(!hashed)
-                    { 
-                       return done(null,false)
-                    }
+
+                    // if i will uncommente this then everything check here
+                    
+                    // if(!user)
+                    // {
+                    //     return done(null,false)
+                    // }
+                    // const hashed = await bcrypt.compare(password,user.password)
+                    // if(!hashed)
+                    // { 
+                    //    return done(null,false)
+                    // }
                     return done(null,user)
                 } catch (error) {
                     return done(error,false)
