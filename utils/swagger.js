@@ -22,7 +22,7 @@ const options = {
     },
     // path of the file.we can add multiple files.we can add schema also
     // if we write '../routes/*.js' then it will work with all the js files
-    apis: [path.resolve(__dirname, '../routes/userRoutes.js')]
+    apis: [path.resolve(__dirname, '../routes/*.js')]
 }
 
 // i have used jsdoc but we can use Yml also
