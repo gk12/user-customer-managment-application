@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const hashPassword = require("../middleware/hash")
 const getPagination = require("../utils/pagination")
 const {emailval,passwordval} = require("../middleware/validators");
-
+const logger = require('../utils/logger')
 // register user
 exports.createUser = async(req,res) =>{
     try{
@@ -103,6 +103,7 @@ exports.loginUser = async(req,res) =>{
             return res.status(401).json({
                 message:"not a valid credentials"
             })
+            // logger.info('not a valid user')
         }
         const hashed = await bcrypt.compare(password,user.password)
         if(hashed)
@@ -209,16 +210,21 @@ exports.deleteUser = async(req,res) =>{
         const user = await User.findById(userId);
         if(!user)
         {
-            res.json({
+            logger.warn('user not found')
+            return res.json({
                 message:"user not found"
             }).status(401)
         }
        await User.deleteOne({_id:userId});
+    //    used logger here
+       logger.info(`User ${user.name} deleted successfully`);
         res.json({
             message:"user deleted successfully"
         }).status(200)
     }catch(error){
-        error
-  
+        logger.error('Error while deleting user')
+        return res.json({
+            meesage:'something went wrong'
+        }).status(500)
     }
 }
