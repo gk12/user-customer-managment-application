@@ -2,7 +2,7 @@ const express = require("express");
 const {createUser,loginUser, updateUser,allUser,deleteUser} = require('../controller/userController')
 const userrouter = express.Router();
 const passport = require('passport')
-
+const {emailval,passwordval} = require('../middleware/validators')
 /**
  * @swagger
  * /api/register:
@@ -35,8 +35,8 @@ const passport = require('passport')
  *     tags:
  *       - User
  */
-
-userrouter.post('/register',createUser);
+// emailval,passwordval are the middleware
+userrouter.post('/register',emailval,passwordval,createUser );
 
 /**
  * @swagger

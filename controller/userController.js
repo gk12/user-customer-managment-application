@@ -4,14 +4,11 @@ const bcrypt = require("bcrypt");
 // const sendEmail = require('../utils/sendEmail')
 const hashPassword = require("../middleware/hash")
 const getPagination = require("../utils/pagination")
-const {emailval,passwordval} = require("../middleware/validators");
 const logger = require('../utils/logger')
 // register user
 exports.createUser = async(req,res) =>{
     try{
     const {username,name,email,password,role} = req.body;
-    const passcheck = passwordval(password);
-    const emailcheck = emailval(email) 
 
     // sendgrid process
     // const from = 'gau963191@gmail.com';
@@ -26,18 +23,6 @@ exports.createUser = async(req,res) =>{
         })
     }
 
-    if(!passwordval(password).includes("strong"))
-    {
-        return res.json({
-            message: passcheck
-        });    
-    }
-    if(!emailcheck)
-    {
-        return res.json({
-             message:"email is not valid email"
-        })
-    }
 
     const hashedPassword = await hashPassword(password);
 

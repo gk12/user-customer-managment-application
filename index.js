@@ -8,7 +8,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./utils/swagger');
 const logger = require('./utils/logger');
 const app= express();
-const PORT = 3094
+const PORT = 3096
 initalizingPassport(app)
 app.use(express.json());
 app.use(express.urlencoded({extended:false}))
