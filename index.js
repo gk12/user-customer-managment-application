@@ -1,3 +1,5 @@
+const dotenv = require('dotenv')
+dotenv.config({path:'./.env'})
 require("./db/db")
 const express = require("express")
 const userroutes = require("./routes/userRoutes");
@@ -8,7 +10,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./utils/swagger');
 const logger = require('./utils/logger');
 const app= express();
-const PORT = 3096
+const PORT = process.env.PORT || 3078
 initalizingPassport(app)
 app.use(express.json());
 app.use(express.urlencoded({extended:false}))
@@ -43,7 +45,6 @@ app.use((req,res,next)=>{
 //     logger.info('request to the root route')
 //     res.send('hello world')
 // })
-
 
 
 app.listen(PORT,()=>{

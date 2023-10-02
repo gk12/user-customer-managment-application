@@ -1,6 +1,10 @@
 const mongoose=require("mongoose");
+const dotenv = require('dotenv')
+
 const User = require('../model/userModel')
-const url ='mongodb://localhost:27017/mydatabase'
+// const url ='mongodb://localhost:27017/mydatabase'
+const url = process.env.DB;
+
 async function connectToDatabase() {
   try {
     await mongoose.connect(url, {

@@ -18,7 +18,7 @@ const logger = createLogger({
         new transports.File({
             filename: path.join(__dirname, 'logs', 'app.log'), 
             // maxsize size of log file will be
-            maxsize: 5 * 1024 * 1024
+            // maxsize: 500
         }),
     ]
 })
